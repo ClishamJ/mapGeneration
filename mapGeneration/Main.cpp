@@ -37,8 +37,8 @@ int main()
 	Grid newGrid = Grid(std::make_tuple(gridWidth, gridHeight), std::make_tuple(grid_xOffset, grid_yOffset), 1, 1);
 	
 
-	terminal_bkcolor(color_t(0xFF121212));
-	terminal_clear_area(grid_xOffset, grid_yOffset, gridWidth, gridHeight);
+	//terminal_bkcolor(color_t(0xFF121212));
+	//terminal_clear_area(grid_xOffset, grid_yOffset, gridWidth, gridHeight);
 
 	newGrid.draw();
 
