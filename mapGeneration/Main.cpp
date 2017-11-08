@@ -41,8 +41,6 @@ int main()
 	terminal_clear_area(grid_xOffset, grid_yOffset, gridWidth, gridHeight);
 
 	newGrid.draw();
-	
-	newGrid.levelGeneration_byQuadrants();
 
 	
 	while (terminal_peek() != TK_CLOSE) {

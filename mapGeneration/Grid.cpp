@@ -51,7 +51,9 @@ Grid::Grid(std::tuple<int, int> widthAndHeight, std::tuple<int, int> xYOffsets, 
 	// Level Generation
 
 	//levelGeneration_Original();
-	levelGeneration_PathCreationWithBFS();
+	//levelGeneration_PathCreationWithBFS();
+
+	levelGeneration_byQuadrants();
 
 
 
@@ -718,6 +720,269 @@ void Grid::levelGeneration_byQuadrants()
 		}
 
 	}
+
+
+
+
+	std::vector<std::tuple<int, int>> spotCoeffs = {};
+	spotCoeffs.push_back(std::make_tuple(1, 0));
+	spotCoeffs.push_back(std::make_tuple(-1, 0));
+	spotCoeffs.push_back(std::make_tuple(0, 1));
+	spotCoeffs.push_back(std::make_tuple(0, -1));
+
+
+
+	bool stillGenerating = true;
+	while (stillGenerating == true) {
+
+
+
+
+		//int minNumOfRooms = 2;
+		//int maxAdditionalRooms = 4;
+
+
+		//int numOfRooms = minNumOfRooms + (int)(maxAdditionalRooms * (rand() / (RAND_MAX + 1.0)));
+
+		int numOfRooms = 3;
+
+		std::vector<std::tuple<int, int>> spotList;
+
+
+		for (int eachSpot = 0; eachSpot < numOfRooms; eachSpot++) {
+
+
+			int xToPlace;
+			int yToPlace;
+
+			int quadrantYToUse;
+			int quadrantToPick;
+
+			if (eachSpot == 0) {
+
+				quadrantYToUse = 0;
+
+			}
+			else if (eachSpot == 1) {
+				
+				quadrantYToUse = 1;
+
+			}
+			else if (eachSpot == 2) {
+				quadrantYToUse = (int)(2 * (rand() / (RAND_MAX + 1.0)));
+			}
+
+			quadrantToPick = (int)(quadrantList[quadrantYToUse].size() * (rand() / (RAND_MAX + 1.0)));
+
+			xToPlace = quadrantList[quadrantYToUse][quadrantToPick].startX + (int)(quadrantList[quadrantYToUse][quadrantToPick].width * (rand() / (RAND_MAX + 1.0)));
+			yToPlace = quadrantList[quadrantYToUse][quadrantToPick].startY + (int)(quadrantList[quadrantYToUse][quadrantToPick].height * (rand() / (RAND_MAX + 1.0)));
+
+
+			//int xToPlace = (int)(width * (rand() / (RAND_MAX + 1.0)));
+			//int yToPlace = (int)(height * (rand() / (RAND_MAX + 1.0)));
+
+			if (xToPlace > width) {
+				printf(std::to_string(xToPlace).c_str());
+			}
+
+			if (yToPlace > height) {
+				printf(std::to_string(yToPlace).c_str());
+			}
+
+			tileList[yToPlace][xToPlace].occupied = false;
+			tileList[yToPlace][xToPlace].icon = 219; // 219 is a solid block character
+			tileList[yToPlace][xToPlace].color = color_t(0x220000FF);
+
+			spotList.push_back(std::make_tuple(xToPlace, yToPlace));
+
+		}
+
+		for (int eachSpot = 0; eachSpot < spotList.size() - 1; eachSpot++) {
+
+
+			std::vector<std::tuple<int, int>> pathToNextSpot = Pathfinding::GreedyBFS_findPath_noCollision(tileList, spotList[eachSpot], spotList[eachSpot + 1]);
+
+			for (int eachStep = 0; eachStep < pathToNextSpot.size(); eachStep++) {
+
+				int stepX = std::get<0>(pathToNextSpot[eachStep]);
+				int stepY = std::get<1>(pathToNextSpot[eachStep]);
+
+				if (tileList[stepY][stepX].occupied == true) {
+
+					tileList[stepY][stepX].occupied = false;
+					tileList[stepY][stepX].icon = 219; // 219 is a solid block character
+					tileList[stepY][stepX].color = color_t(0x330000DD);
+
+				}
+
+			}
+
+
+
+		}
+
+		//int boxMaxWidth = 20;
+		//int boxMinWidth = 3;
+		//int boxMaxHeight = 20;
+		//int boxMinHeight = 3;
+
+		int boxMaxWidth = 30;
+		int boxMinWidth = 15;
+		int boxMaxHeight = 30;
+		int boxMinHeight = 15;
+
+
+		for (int eachSpot = 0; eachSpot < spotList.size(); eachSpot++) {
+
+
+			int eachSpotX = std::get<0>(spotList[eachSpot]);
+			int eachSpotY = std::get<1>(spotList[eachSpot]);
+
+			int boxWidth = boxMinWidth + (int)((boxMaxWidth - boxMinWidth) * (rand() / (RAND_MAX + 1.0)));
+			int boxHeight = boxMinHeight + (int)((boxMaxHeight - boxMinHeight) * (rand() / (RAND_MAX + 1.0)));
+
+			if (boxWidth >= boxMaxWidth) {
+				boxWidth = boxMaxWidth;
+			}
+			if (boxHeight >= boxMaxHeight) {
+				boxHeight = boxMaxHeight;
+			}
+
+			int halfBackX = eachSpotX - int(boxWidth / 2);
+			int halfBackY = eachSpotY - int(boxHeight / 2);
+
+			if (halfBackX < 0) {
+				halfBackX = 0;
+			}
+			if (halfBackY < 0) {
+				halfBackY = 0;
+			}
+
+
+
+			int numOfAttempts = 100;
+			int currentAttempt = 0;
+
+
+			bool placingBox = true;
+			while (placingBox == true) {
+
+				if (currentAttempt >= numOfAttempts) {
+					placingBox = false;
+					currentAttempt = 0;
+				}
+
+				//printf("\n");
+				//printf("halfBackX: ");
+				//printf(std::to_string(halfBackX).c_str());
+				//printf("\n");
+
+				//printf("\n");
+				//printf("halfBackY: ");
+				//printf(std::to_string(halfBackY).c_str());
+				//printf("\n");
+
+				//printf("\n");
+				//printf("halfBackX+boxWidth: ");
+				//printf(std::to_string(halfBackX + boxWidth).c_str());
+				//printf("\n");
+
+				//printf("\n");
+				//printf("halfBackY+boxHeight: ");
+				//printf(std::to_string(halfBackY + boxHeight).c_str());
+				//printf("\n");
+
+
+				// if the box fits in the screen size AND the box still contains the original point (box not floating outside somewhere)
+				if ((halfBackX > 0 && halfBackX + boxWidth < width && halfBackY > 0 && halfBackY + boxHeight < height) && (eachSpotX >= halfBackX && eachSpotY >= halfBackY && eachSpotX < halfBackX + boxWidth && eachSpotY < halfBackY + boxHeight)) {
+
+					for (int eachY = 0; eachY < boxHeight; eachY++) {
+
+						for (int eachX = 0; eachX < boxWidth; eachX++) {
+
+
+							if (tileList[eachY + halfBackY][eachX + halfBackX].color != color_t(0x220000FF)) {
+
+								tileList[eachY + halfBackY][eachX + halfBackX].occupied = false;
+								tileList[eachY + halfBackY][eachX + halfBackX].icon = 219; // 219 is a solid block character
+								tileList[eachY + halfBackY][eachX + halfBackX].color = color_t(0x440000FF);
+
+
+							}
+
+						}
+
+					}
+
+					placingBox = false;
+
+				}
+				else {
+					//printf("DOESN'T FIT");
+
+					int changeToMake = (int)((6) * (rand() / (RAND_MAX + 1.0)));
+
+					if (changeToMake == 0) {
+
+						boxWidth -= 1;
+						if (boxWidth < 2) {
+							boxWidth = 2;
+						}
+
+					}
+					else if (changeToMake == 1) {
+
+						boxHeight -= 1;
+						if (boxHeight < 2) {
+							boxHeight = 2;
+						}
+					}
+					else if (changeToMake == 2) {
+						halfBackX++;
+						if (halfBackX >= width) {
+							halfBackX = width - 1;
+						}
+					}
+					else if (changeToMake == 3) {
+						halfBackY++;
+						if (halfBackY >= height) {
+							halfBackY = height - 1;
+						}
+					}
+					else if (changeToMake == 4) {
+						halfBackX--;
+						if (halfBackX < 0) {
+							halfBackX = 0;
+						}
+					}
+					else if (changeToMake == 5) {
+						halfBackY--;
+						if (halfBackY < 0) {
+							halfBackY = 0;
+						}
+					}
+
+				}
+
+				currentAttempt++;
+
+
+			}
+
+
+
+		}
+
+
+		stillGenerating = false;
+
+	}
+
+
+
+
+
+
 
 
 
