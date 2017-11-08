@@ -761,7 +761,7 @@ void Grid::levelGeneration_byQuadrants()
 
 		int numOfQuadrantsToUse = 3;
 
-		for (int eachQuad = 0; eachQuad < numOfQuadrantsToUse; eachQuad++) {
+		while(quadrantsToUse.size() < numOfQuadrantsToUse){
 
 			int yToUse = (int)(numberOfVerticalQuadrants * (rand() / (RAND_MAX + 1.0)));
 			int xToUse = (int)(numberOfHorizontalQuadrants * (rand() / (RAND_MAX + 1.0)));
@@ -813,7 +813,7 @@ void Grid::levelGeneration_byQuadrants()
 
 			tileList[yToPlace][xToPlace].occupied = false;
 			tileList[yToPlace][xToPlace].icon = 219; // 219 is a solid block character
-			tileList[yToPlace][xToPlace].color = color_t(0x220000FF);
+			tileList[yToPlace][xToPlace].color = color_t(0xFF0000FF);
 
 			spotList.push_back(std::make_tuple(xToPlace, yToPlace));
 
@@ -833,7 +833,7 @@ void Grid::levelGeneration_byQuadrants()
 
 					tileList[stepY][stepX].occupied = false;
 					tileList[stepY][stepX].icon = 219; // 219 is a solid block character
-					tileList[stepY][stepX].color = color_t(0x330000DD);
+					tileList[stepY][stepX].color = color_t(0xFF0000DD);
 
 				}
 
@@ -923,11 +923,11 @@ void Grid::levelGeneration_byQuadrants()
 						for (int eachX = 0; eachX < boxWidth; eachX++) {
 
 
-							if (tileList[eachY + halfBackY][eachX + halfBackX].color != color_t(0x220000FF)) {
+							if (tileList[eachY + halfBackY][eachX + halfBackX].color != color_t(0xFF0000FF)) {
 
 								tileList[eachY + halfBackY][eachX + halfBackX].occupied = false;
 								tileList[eachY + halfBackY][eachX + halfBackX].icon = 219; // 219 is a solid block character
-								tileList[eachY + halfBackY][eachX + halfBackX].color = color_t(0x440000FF);
+								tileList[eachY + halfBackY][eachX + halfBackX].color = color_t(0xFF0000BB);
 
 
 							}
