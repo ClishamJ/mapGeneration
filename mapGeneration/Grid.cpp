@@ -761,7 +761,7 @@ void Grid::levelGeneration_byQuadrants()
 
 		std::map<int, std::vector<int>> keysInUse;
 
-		int numOfQuadrantsToUse = 3;
+		int numOfQuadrantsToUse = 5;
 
 		while(quadrantsToUse.size() < numOfQuadrantsToUse){
 
@@ -787,6 +787,8 @@ void Grid::levelGeneration_byQuadrants()
 		}
 
 
+
+		// Ensure "diverse" Y elements; Not all quadrants on the same Y level, at least 1 quadrant on each possible Y level, etc.
 		bool acceptableQuadrants = false;
 		while (acceptableQuadrants == false) {
 
@@ -794,6 +796,7 @@ void Grid::levelGeneration_byQuadrants()
 			bool listHasDiverseYElements = true;
 			std::vector<int> yElementsLacking = {};
 
+			// Check to see which Y levels need quadrants
 			for (int eachQuad = 0; eachQuad < numberOfVerticalQuadrants; eachQuad++) {
 
 				if (keysInUse.count(eachQuad) < 1) {
@@ -803,31 +806,19 @@ void Grid::levelGeneration_byQuadrants()
 
 			}
 
+			// If no others needed, return and continue
 			if (listHasDiverseYElements == true) {
 				acceptableQuadrants = true;
 			}
 			else {
 
-				//std::vector<int> yElementsToAdd = {};
-
-				//for (int eachY = 0; eachY < numberOfVerticalQuadrants; eachY++) {
-
-				//	if (std::find(yElementsLacking.begin(), yElementsLacking.end(), eachY) != yElementsLacking.end()) {
-				//		yElementsToAdd.push_back(eachY);
-				//	}
-
-				//}
-
-
-
+				// Remove a quadrant at random
 				int quadrantToRemove = (int)(quadrantsToUse.size() * (rand() / (RAND_MAX + 1.0)));
-
-				//keysInUse[quadrantsToUse[quadrantToRemove].yIndex].
 				keysInUse[quadrantsToUse[quadrantToRemove].yIndex].erase(std::remove(keysInUse[quadrantsToUse[quadrantToRemove].yIndex].begin(), keysInUse[quadrantsToUse[quadrantToRemove].yIndex].end(), quadrantsToUse[quadrantToRemove].xIndex), keysInUse[quadrantsToUse[quadrantToRemove].yIndex].end());
 
 				quadrantsToUse.erase(quadrantsToUse.begin() + quadrantToRemove);
 		
-
+				// Replace it with a quadrant at the desired Y level (X chosen doesn't matter and can't conflict as we know that there are no other elements at this Y level)
 				int xToUse = (int)(numberOfHorizontalQuadrants * (rand() / (RAND_MAX + 1.0)));
 
 				quadrantsToUse.push_back(quadrantList[yElementsLacking[0]][xToUse]);
@@ -840,8 +831,7 @@ void Grid::levelGeneration_byQuadrants()
 		}
 		
 
-		//int nextQuadIndex = 0;
-		//while(nextQuad )
+		// Pick spots within the quadrants
 
 		for (int eachSpot = 0; eachSpot < quadrantsToUse.size(); eachSpot++) {
 
