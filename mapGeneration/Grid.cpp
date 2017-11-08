@@ -759,6 +759,8 @@ void Grid::levelGeneration_byQuadrants()
 
 		// Add multiple DIFFERENT quadrants to the list
 
+		std::map<int, std::vector<int>> keysInUse;
+
 		int numOfQuadrantsToUse = 3;
 
 		while(quadrantsToUse.size() < numOfQuadrantsToUse){
@@ -778,7 +780,62 @@ void Grid::levelGeneration_byQuadrants()
 
 			if (usableQuad == true) {
 				quadrantsToUse.push_back(quadrantList[yToUse][xToUse]);
+
+				keysInUse[yToUse].push_back(xToUse);
 			}
+
+		}
+
+
+		bool acceptableQuadrants = false;
+		while (acceptableQuadrants == false) {
+
+
+			bool listHasDiverseYElements = true;
+			std::vector<int> yElementsLacking = {};
+
+			for (int eachQuad = 0; eachQuad < numberOfVerticalQuadrants; eachQuad++) {
+
+				if (keysInUse.count(eachQuad) < 1) {
+					listHasDiverseYElements = false;
+					yElementsLacking.push_back(eachQuad);
+				}
+
+			}
+
+			if (listHasDiverseYElements == true) {
+				acceptableQuadrants = true;
+			}
+			else {
+
+				//std::vector<int> yElementsToAdd = {};
+
+				//for (int eachY = 0; eachY < numberOfVerticalQuadrants; eachY++) {
+
+				//	if (std::find(yElementsLacking.begin(), yElementsLacking.end(), eachY) != yElementsLacking.end()) {
+				//		yElementsToAdd.push_back(eachY);
+				//	}
+
+				//}
+
+
+
+				int quadrantToRemove = (int)(quadrantsToUse.size() * (rand() / (RAND_MAX + 1.0)));
+
+				//keysInUse[quadrantsToUse[quadrantToRemove].yIndex].
+				keysInUse[quadrantsToUse[quadrantToRemove].yIndex].erase(std::remove(keysInUse[quadrantsToUse[quadrantToRemove].yIndex].begin(), keysInUse[quadrantsToUse[quadrantToRemove].yIndex].end(), quadrantsToUse[quadrantToRemove].xIndex), keysInUse[quadrantsToUse[quadrantToRemove].yIndex].end());
+
+				quadrantsToUse.erase(quadrantsToUse.begin() + quadrantToRemove);
+		
+
+				int xToUse = (int)(numberOfHorizontalQuadrants * (rand() / (RAND_MAX + 1.0)));
+
+				quadrantsToUse.push_back(quadrantList[yElementsLacking[0]][xToUse]);
+
+				keysInUse[yElementsLacking[0]].push_back(xToUse);
+
+			}
+
 
 		}
 		
