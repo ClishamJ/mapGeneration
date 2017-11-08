@@ -655,6 +655,9 @@ void Grid::levelGeneration_byQuadrants()
 		int width;
 		int height;
 
+		int xIndex;
+		int yIndex;
+
 	};
 
 	std::vector< std::vector<quadrant> > quadrantList;
@@ -673,6 +676,8 @@ void Grid::levelGeneration_byQuadrants()
 			newQuad.startY = currentStartY;
 			newQuad.width = widthOfQuadrants;
 			newQuad.height = heightOfQuadrants;
+			newQuad.xIndex = eachX;
+			newQuad.yIndex = eachY;
 			currentQuadList.push_back(newQuad);
 
 			currentStartX += widthOfQuadrants;
@@ -744,12 +749,44 @@ void Grid::levelGeneration_byQuadrants()
 
 		//int numOfRooms = minNumOfRooms + (int)(maxAdditionalRooms * (rand() / (RAND_MAX + 1.0)));
 
-		int numOfRooms = 3;
+		//int numOfRooms = 3;
 
 		std::vector<std::tuple<int, int>> spotList;
 
 
-		for (int eachSpot = 0; eachSpot < numOfRooms; eachSpot++) {
+		std::vector<quadrant> quadrantsToUse = {};
+
+
+		// Add multiple DIFFERENT quadrants to the list
+
+		int numOfQuadrantsToUse = 3;
+
+		for (int eachQuad = 0; eachQuad < numOfQuadrantsToUse; eachQuad++) {
+
+			int yToUse = (int)(numberOfVerticalQuadrants * (rand() / (RAND_MAX + 1.0)));
+			int xToUse = (int)(numberOfHorizontalQuadrants * (rand() / (RAND_MAX + 1.0)));
+
+			bool usableQuad = true;
+
+			for (int eachOtherQuad = 0; eachOtherQuad < quadrantsToUse.size(); eachOtherQuad++) {
+
+				if (quadrantsToUse[eachOtherQuad].xIndex == quadrantList[yToUse][xToUse].xIndex && quadrantsToUse[eachOtherQuad].yIndex == quadrantList[yToUse][xToUse].yIndex) {
+					usableQuad = false;
+				}
+
+			}
+
+			if (usableQuad == true) {
+				quadrantsToUse.push_back(quadrantList[yToUse][xToUse]);
+			}
+
+		}
+		
+
+		//int nextQuadIndex = 0;
+		//while(nextQuad )
+
+		for (int eachSpot = 0; eachSpot < quadrantsToUse.size(); eachSpot++) {
 
 
 			int xToPlace;
@@ -758,24 +795,9 @@ void Grid::levelGeneration_byQuadrants()
 			int quadrantYToUse;
 			int quadrantToPick;
 
-			if (eachSpot == 0) {
 
-				quadrantYToUse = 0;
-
-			}
-			else if (eachSpot == 1) {
-				
-				quadrantYToUse = 1;
-
-			}
-			else if (eachSpot == 2) {
-				quadrantYToUse = (int)(2 * (rand() / (RAND_MAX + 1.0)));
-			}
-
-			quadrantToPick = (int)(quadrantList[quadrantYToUse].size() * (rand() / (RAND_MAX + 1.0)));
-
-			xToPlace = quadrantList[quadrantYToUse][quadrantToPick].startX + (int)(quadrantList[quadrantYToUse][quadrantToPick].width * (rand() / (RAND_MAX + 1.0)));
-			yToPlace = quadrantList[quadrantYToUse][quadrantToPick].startY + (int)(quadrantList[quadrantYToUse][quadrantToPick].height * (rand() / (RAND_MAX + 1.0)));
+			xToPlace = quadrantsToUse[eachSpot].startX + (int)(quadrantsToUse[eachSpot].width * (rand() / (RAND_MAX + 1.0)));
+			yToPlace = quadrantsToUse[eachSpot].startY + (int)(quadrantsToUse[eachSpot].height * (rand() / (RAND_MAX + 1.0)));
 
 
 			//int xToPlace = (int)(width * (rand() / (RAND_MAX + 1.0)));
