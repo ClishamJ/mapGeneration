@@ -876,13 +876,41 @@ void Grid::levelGeneration_byQuadrants()
 				int stepX = std::get<0>(pathToNextSpot[eachStep]);
 				int stepY = std::get<1>(pathToNextSpot[eachStep]);
 
-				if (tileList[stepY][stepX].occupied == true) {
+				//if (tileList[stepY][stepX].occupied == true) {
 
 					tileList[stepY][stepX].occupied = false;
 					tileList[stepY][stepX].icon = 219; // 219 is a solid block character
 					tileList[stepY][stepX].color = color_t(0xFF0000DD);
 
-				}
+
+					if (stepY - 1 > 0) {
+						tileList[stepY - 1][stepX].occupied = false;
+						tileList[stepY - 1][stepX].icon = 219; // 219 is a solid block character
+						tileList[stepY - 1][stepX].color = color_t(0x440000DD);
+					}
+
+					if (stepY + 1 < height) {
+						tileList[stepY + 1][stepX].occupied = false;
+						tileList[stepY + 1][stepX].icon = 219; // 219 is a solid block character
+						tileList[stepY + 1][stepX].color = color_t(0x440000DD);
+					}
+
+					if (stepX + 1 < width) {
+						tileList[stepY][stepX + 1].occupied = false;
+						tileList[stepY][stepX + 1].icon = 219; // 219 is a solid block character
+						tileList[stepY][stepX + 1].color = color_t(0x440000DD);
+
+					}
+
+					if (stepX - 1 > 0) {
+						tileList[stepY][stepX - 1].occupied = false;
+						tileList[stepY][stepX - 1].icon = 219; // 219 is a solid block character
+						tileList[stepY][stepX - 1].color = color_t(0x440000DD);
+
+					}
+
+
+				//}
 
 			}
 
